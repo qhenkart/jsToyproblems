@@ -1,3 +1,9 @@
+// STRINGS AND ARRAYS
+
+
+
+
+
 //check to see if a string is filled with unique characters without using any Data structures other than Arrays
 function unique(str){
   var map = [];
@@ -75,8 +81,8 @@ function rotateMatrixInPlace(matrix){
     var last = matrix.length-1-layer;
     for(var i = first; i < last; i++){
       var offset = i - layer;
-      var top = matrix[first][i];
 
+      var top = matrix[first][i]
       //left to top
       matrix[first][i] = matrix[last - offset][first];
 
@@ -96,3 +102,156 @@ function rotateMatrixInPlace(matrix){
 // var square = [[0,1,2],[3,4,5],[6,7,8]] //630 741 852
 // square = [[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]] // 12 8 4 0   13 9 5 1   14 10 6 2   15 11 7 3
 // square = [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24]]; // 20 15 10 5 0     21 16 11 6 1    22 17 12 7 2   23 18 13 8 3   24 19 14 9 4 
+
+function setZeros(matrix){
+  var map = {};
+  for(var i = 0; i < matrix.length; i++){
+    for(var j = 0; j < matrix[0].length; j++){
+      if(matrix[i][j] === 0){
+        map['row' + i] = true;
+        map['col' + j] = true;
+        matrix[i][j] = 0
+      }
+    }
+  }
+  for(var i = 0; i < matrix.length; i++){
+    for(var j = 0; j < matrix[0].length; j++){
+      if(map['row' + i] || map['col'+j]){
+        matrix[i][j] = 0;
+      }
+    }
+  }
+  return matrix;
+}
+var square = [[0,1,2,3],[4,5,0,7],[8,9,10,11]]
+// console.log(setZeros(square))
+
+function isRotation(str1, str2){
+  var newStr = str1+ str1;
+  return newStr.indexOf(str2) > -1
+  
+}
+
+// console.log(isRotation('waterbottle', 'erbottlewat'))
+
+
+
+//LINKED LISTS
+
+var LinkedList = function(){
+  this.head = null;
+  this.tail = null;
+  this.count = 0;
+}
+var Node = function(val){
+  this.val = val;
+  this.next = null;
+}
+
+LinkedList.prototype.addNode = function(val){
+  if(this.head === null){
+    this.head = new Node(val);
+    this.tail = this.head;
+  }else{
+    this.tail.next = new Node(val);
+    this.tail = this.tail.next
+  }
+  this.count++;
+}
+
+LinkedList.prototype.size = function(){
+  return this.count;
+}
+
+LinkedList.prototype.contains = function(val, node){
+  node = node || this.head;
+  if(val === node.val){
+    return true;
+  }else if(node.next === null){
+    return false;
+  }
+  return this.contains(val, node.next)
+}
+
+LinkedList.prototype.remove = function(val, node){
+  node = node || this.head;
+  var result = "unable to find Node"
+  if(val === this.head.val){
+    result = this.head.val;
+    this.head = this.head.next;
+    this.count--;
+  }else if(val === node.next.val){
+    result = node.next.val
+    node.next = node.next.next;
+    this.count--;
+  }else{
+    result = this.remove(val, node.next)
+  }
+  return result;
+
+}
+LinkedList.prototype.removeDuplicates = function(){
+  var count = 0;
+  var hash = {};
+  var node = this.head;
+  hash[this.head.val] = true;
+  while(node.next !== null){
+    if(hash[node.next.val]){
+      node.next = node.next.next;
+      count++;
+      this.count--;
+    }else{
+      hash[node.next.val] = true;
+      node = node.next
+    }
+  }
+  return count + " Duplicates Removed"
+}
+
+LinkedList.prototype.removeDuplicatesNoBuffer = function(){
+  var currentNode = this.head;
+  var count = 0;
+  while(currentNode.next !== null){
+    var runnerNode = currentNode;
+    while(runnerNode.next !== null){
+      if(currentNode.val === runnerNode.next.val){
+        runnerNode.next = runnerNode.next.next;
+        count++;
+        this.count--;
+      }else{
+        if(runnerNode.next !== null) runnerNode = runnerNode.next;
+      }
+    }
+    if(currentNode.next !== null) currentNode = currentNode.next;
+  }
+  return count + " Duplicates Removed"
+}
+
+LinkedList.prototype.findNthElement = function(n){
+  var node = this.head;
+  var counter = 1;
+  var inspector = function(node){
+    if(counter === this.count - n + 1){
+      return node.val;
+    }else if(node.next === null){
+      return null;
+    }else{
+      counter++;
+      return inspector(node.next);
+    }
+  }
+  inspector = inspector.bind(this);
+  return inspector(node);
+}
+
+var list = new LinkedList();
+list.addNode(1);
+list.addNode(2);
+list.addNode(3);
+list.addNode(4);
+list.addNode(5);
+list.addNode(6);
+
+// console.log(list.removeDuplicatesNoBuffer())
+
+console.log(list.findNthElement(5))
