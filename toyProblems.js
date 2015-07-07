@@ -244,14 +244,71 @@ LinkedList.prototype.findNthElement = function(n){
   return inspector(node);
 }
 
+var deleteNode = function(node){
+  if(node.next === null) return null;
+  node.val = node.next.val;
+  node.next = node.next.next;
+}
+
+var wrapList = function(val, list){
+  var lesser = new LinkedList();
+  var greater = new LinkedList();
+  var wrapped;
+  while(list){
+    if(list.val < val){
+      lesser.addNode(list.val);
+    }else if(list.val > val){
+      greater.addNode(list.val);
+    }else if(list.val === val){
+      wrapped = new Node(val);
+    }
+    list = list.next
+  }
+  if(wrapped){
+    lesser.tail.next = wrapped;
+    lesser.tail = wrapped;
+    lesser.count++;
+  }
+  lesser.tail.next = greater.head;
+  lesser.tail = greater.tail;
+  lesser.count += greater.count
+  return lesser;
+}
+
+var addLinkedLists = function(list1, list2){
+  var firstNum = [];
+  var secondNum = [];
+
+  while(list1){
+    firstNum.push(list1.val);
+    list1 = list1.next;
+  }
+  while(list2){
+    secondNum.push(list2.val);
+    list2 = list2.next;
+  }
+  return +(firstNum.reverse().join('')) + +(secondNum.reverse().join(''))
+}
+
 var list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
 list.addNode(4);
 list.addNode(5);
 list.addNode(6);
+list.addNode(2);
+list.addNode(3);
+list.addNode(1);
 
+var list1 = new LinkedList();
+list1.addNode(5)
+list1.addNode(2)
+list1.addNode(4)
+var list2 = new LinkedList();
+list2.addNode(5)
+list2.addNode(2)
+list2.addNode(1)
+
+console.log(addLinkedLists(list1.head, list2.head))
 // console.log(list.removeDuplicatesNoBuffer())
-
-console.log(list.findNthElement(5))
+// var newList = wrapList(3, list.head);
+// console.log(newList.head.next.next.next)
+// console.log(newList.size())
