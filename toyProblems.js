@@ -290,25 +290,192 @@ var addLinkedLists = function(list1, list2){
   return +(firstNum.reverse().join('')) + +(secondNum.reverse().join(''))
 }
 
-var list = new LinkedList();
-list.addNode(4);
-list.addNode(5);
-list.addNode(6);
-list.addNode(2);
-list.addNode(3);
-list.addNode(1);
+var circularLinkedList = function(list){
+  var slowTracker = list.head.next;
+  var fastTracker = list.head.next.next;
+  while(fastTracker !== slowTracker){
+    if(fastTracker.next === null){
+      return "This is a functional LinkedList"
+    } 
+    fastTracker = fastTracker.next.next;
+    slowTracker = slowTracker.next;
+    
+  }
+  slowTracker = list.head
+  while(fastTracker !== slowTracker){
+    slowTracker = slowTracker.next
+    fastTracker = fastTracker.next
+  }
+  return fastTracker;
+}
 
-var list1 = new LinkedList();
-list1.addNode(5)
-list1.addNode(2)
-list1.addNode(4)
-var list2 = new LinkedList();
-list2.addNode(5)
-list2.addNode(2)
-list2.addNode(1)
+var isPalindrome = function(list){
+  var str = '';
+  var node = list.head
+  while(node){
+    str += node.val;
+    node = node.next;
+  }
+  return str === str.split('').reverse().join('');
+}
+//Tests: 
+// var list = new LinkedList();
+// list.addNode(1);
+// list.addNode(2);
+// list.addNode(3);
+// list.addNode(4);
+// list.addNode(5);
+// list.addNode(7);
+// list.addNode(8);
+// list.addNode(9);
+// list.addNode(10);
+// list.addNode(11);
+// list.addNode(12);
+// // list.tail = list.head.next.next.next.next.next
+// // list.head.next.next.next.next.next.next.next.next.next.next = list.tail
+// // console.log(list.head.next.next.next.next.next.next.next.next.next.next)
+// console.log(isPalindrome(list))
 
-console.log(addLinkedLists(list1.head, list2.head))
+
+// var list1 = new LinkedList();
+// list1.addNode(5)
+// list1.addNode(2)
+// list1.addNode(4)
+// var list2 = new LinkedList();
+// list2.addNode(5)
+// list2.addNode(2)
+// list2.addNode(1)
+
+// console.log(addLinkedLists(list1.head, list2.head))
 // console.log(list.removeDuplicatesNoBuffer())
 // var newList = wrapList(3, list.head);
 // console.log(newList.head.next.next.next)
 // console.log(newList.size())
+
+
+
+//STACKS AND QUEUES
+
+var Stack = function(){
+  this.storage = [];
+  this.size = 0;
+  this.min = [];
+}
+
+Stack.prototype.push = function(val){
+  this.storage.push(val);
+  this.size++;
+  if(this.min[this.min.length-1] >= val || !this.min.length){
+    this.min.push(val);
+  }
+}
+
+Stack.prototype.pop = function(){
+  var result = this.storage.pop();
+  if(this.size > 0) this.size--;
+  if(result === this.min[this.min.length-1]){
+    this.min.pop();
+  }
+  return result || "Stack is Empty";
+}
+
+Stack.prototype.min = function(){
+  return this.min[this.min.length-1];
+}
+Stack.prototype.length = function(){
+  return this.size;
+}
+
+var SetOfStacks = function(){
+  Stack.call(this);
+  this.limit = 3;
+  this.stacks = 1;
+  this.storage = [[]];
+}
+
+SetOfStacks.prototype = Object.create(Stack.prototype);
+SetOfStacks.prototype.constructor = SetOfStacks;
+
+SetOfStacks.prototype.push = function(val){
+  if(this.size + 1 > 3){
+    this.storage.push([]);
+    this.stacks++;
+    this.size = 0;
+  }
+  this.storage[this.storage.length-1].push(val);
+  this.size++;
+}
+
+SetOfStacks.prototype.pop = function(){
+  var result = this.storage[this.stacks-1].pop();
+  if(this.size <= 1 && this.stacks > 1){
+    this.storage.pop();
+    this.stacks--;
+    this.size = 3;
+  }else if(this.size > 0){
+    this.size--;
+  }
+  return result || "Stack is Empty"
+}
+
+var towersOfHanoi = function(size){
+  var towerOne = new Stack();
+  var towerTwo = new Stack();
+  var towerThree = new Stack();
+  for(var i = 1; i <= size; i++){
+    towerOne.push(i)
+  }
+
+  var move = function(output, input){
+    input.push(output.pop());
+  }
+
+  var recurse = function(n, from, to , via){
+    if (n==0) return;
+
+    recurse(n-1, from, via , to);
+
+    move(from,to);
+    
+    recurse(n-1, via, to , from);
+  }
+  recurse(size, towerOne, towerThree,towerTwo)
+
+  return towerThree.storage;
+
+}
+
+
+var QueueStack = function(){
+  this.inputs = new Stack();
+  this.outputs = new Stack();
+
+}
+
+QueueStack.prototype.enqueue = function(val){
+  this.inputs.push(val);
+}
+
+QueueStack.prototype.dequeue = function(){
+  if(this.outputs.length()>0){
+    return this.outputs.pop()
+  }else{
+    for(var i = 0; this.inputs.length() > 0; i++){
+      this.outputs.push(this.inputs.pop());
+    }
+  }
+  return this.outputs.pop();
+
+}
+
+var queue = new QueueStack();
+queue.enqueue(5)
+queue.enqueue(4)
+queue.enqueue(1)
+console.log(queue.dequeue())
+queue.enqueue(2)
+queue.enqueue(3)
+console.log(queue.dequeue())
+console.log(queue.dequeue())
+console.log(queue.dequeue())
+console.log(queue)
