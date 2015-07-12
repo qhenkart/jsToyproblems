@@ -65,29 +65,29 @@ Tree.prototype.BFS = function(val){
 // console.log(tree.BFS(5))
 
 
-var BinaryTree = function(val){
+var BinarySearchTree = function(val){
   this.val = val;
   this.left = null;
   this.right = null; 
 }
 
-BinaryTree.prototype.addChild = function(val){
+BinarySearchTree.prototype.addChild = function(val){
   if(val <= this.val){
     if(this.left === null){
-      this.left = new BinaryTree(val);
+      this.left = new BinarySearchTree(val);
     }else{
       this.left.addChild(val);
     }
   }else{
     if(this.right === null){
-      this.right = new BinaryTree(val);
+      this.right = new BinarySearchTree(val);
     }else{
       this.right.addChild(val)
     }
   }
 }
 
-BinaryTree.prototype.contains = function(val){
+BinarySearchTree.prototype.contains = function(val){
   if(this.val === val){
     return true
   }else{
@@ -100,7 +100,7 @@ BinaryTree.prototype.contains = function(val){
   return "Not In Tree"
 }
 
-BinaryTree.prototype.isBalanced = function(){
+BinarySearchTree.prototype.isBalanced = function(){
   var height = 0;
   var recurse = function(tree, counter){
   var counter = counter || 0;
@@ -128,7 +128,7 @@ BinaryTree.prototype.isBalanced = function(){
 
 
 
-// var tree = new BinaryTree(5)
+// var tree = new BinarySearchTree(5)
 // // tree.addChild(3);
 // // tree.addChild(6);
 // // tree.addChild(4);
@@ -261,7 +261,7 @@ var convertSortedArrayToTree = function(arr, tree){
   if(tree){
     tree.addChild(arr[2]);
   }else{
-    tree = new BinaryTree(arr[2])
+    tree = new BinarySearchTree(arr[2])
   }
 
   if(arr[0].length>2){
@@ -294,5 +294,130 @@ var convertSortedArrayToTree = function(arr, tree){
 // var tree = convertSortedArrayToTree(arr);
 // console.log(tree.left)
 
+var LinkedList = function(){
+  this.head = null;
+  this.tail = null;
+}
+var Node = function(val){
+  this.val = val
+  this.next = null;
+}
+LinkedList.prototype.addNode = function(val){
+  var node = new Node(val);
+  if(!this.head){
+    this.head = node;
+    this.tail = node;
+  }else{
+    this.tail.next = node;
+    this.tail = node;
+  }
+}
 
+var convertTreeToList = function(tree){
+  var lists = {};
+  // lists[1] = new LinkedList();
+  // lists[1].addNode(tree.val);
+  
+  var inner = function(tree, count){
+    count = count || 1;
+    if(!tree){
+      return;
+    }
+    lists[count] = lists[count] || new LinkedList();
+    lists[count].addNode(tree.val);
+
+    if(tree.left){
+      inner(tree.left, count+1);
+    }
+    if(tree.right){
+      inner(tree.right, count+1);
+    }
+  }
+  inner(tree);
+  return lists;
+}
+
+var BinaryTree = function(val){
+  BinarySearchTree.call(this)
+  this.val = val;
+  this.leftLength = 0;
+  this.rightLength = 0;
+}
+
+BinaryTree.prototype = Object.create(BinarySearchTree.prototype);
+BinaryTree.prototype.constructor = 'BinaryTree';
+
+BinaryTree.prototype.addChild = function(val){
+  if(this.left === null){
+    this.leftLength++;
+    this.left = new BinaryTree(val);
+  }else if(this.right === null){
+    this.rightLength++;
+    this.right = new BinaryTree(val)
+  }else if(this.leftLength <= this.rightLength){
+    this.leftLength++;
+    this.left.addChild(val);
+  }else if(this.leftLength > this.rightLength){
+    this.rightLength++;
+    this.right.addChild(val);
+  }
+}
+
+BinaryTree.prototype.contains = function(val){
+  var result = false;
+  var inner = function(node){
+    node = node || this;
+    if(node.val === val){
+      result = true;
+      return;
+    }else {
+      if(node.left && !result){
+        inner(node.left);
+      }
+      if(node.right && !result){
+        inner(node.right);
+      }
+    }
+  }
+  inner.call(this)
+  return result;
+}
+
+BinaryTree.prototype.findParent = function(val1, val2){
+  var result;
+  var inner = function(node){
+    debugger
+    if(node.left&& !result){
+      inner(node.left);
+    }
+    if(node.right&& !result){
+      inner(node.right);
+    }
+    if(node.contains(val1) && node.contains(val2) && !result){
+      result = node.val;
+    }
+
+  }
+  inner(this)
+  return result;
+}
+
+BinaryTree.prototype.findSum = function(sum){
+  sum = sum || this.val;
+  // node = node|| this;
+  if(this.left){
+    this.left.findSum(sum)
+  }
+}
+
+
+var tree = new BinaryTree(5)
+tree.addChild(3);
+tree.addChild(2);
+tree.addChild(4);
+tree.addChild(8);
+tree.addChild(7);
+tree.addChild(9);
+// console.log(tree)
+console.log(tree.findSum(16))
 
