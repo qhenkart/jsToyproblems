@@ -20,7 +20,6 @@ var merge = function(left, right){
 
 
 var mergeSort = function(array){
-  debugger
   if(array.length < 2){
     return array;
   }
@@ -33,5 +32,23 @@ var mergeSort = function(array){
 
 }
 
-var arr = [7, 4, 9, 3, 6, 2]
-console.log(mergeSort(arr))
+var quickSort = function(array){
+  debugger;
+  if(array.length < 2){
+    return array;
+  }
+  var low = [];
+  var high = [];
+  var pivot = Math.floor(array.length/2);
+  array.forEach(function(el, i){
+    if(el <= array[pivot] && i !== pivot){
+      low.push(el);
+    }else if(i !== pivot){
+      high.push(el);
+    }
+  });
+  return quickSort(low).concat(array[pivot]).concat(quickSort(high))
+}
+
+var arr = [7, 4, 3, 5, 9, 6, 2]
+console.log(quickSort(arr))
