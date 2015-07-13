@@ -408,6 +408,7 @@ BinaryTree.prototype.findSum = function(sum){
   if(this.left){
     this.left.findSum(sum)
   }
+  if(this.right)
 }
 
 
