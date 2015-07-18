@@ -408,17 +408,48 @@ BinaryTree.prototype.findSum = function(sum){
   if(this.left){
     this.left.findSum(sum)
   }
-  if(this.right)
+  // if(this.right)
 }
 
+var isBalanced = function(tree){
+  var height = 0;
+  var inner = function(node, counter){
+    counter = counter || 0;
 
-var tree = new BinaryTree(5)
-tree.addChild(3);
-tree.addChild(2);
+    if(!node.left || !node.right){
+      if(height === 0){
+        height = counter;
+      }else if(height !== counter){
+        height = -1
+      }
+    }
+    if(node.left && height !== -1){
+      inner(node.left, counter+1)
+    }
+    if(node.right && height !== -1){
+      inner(node.right, counter+1)
+    }
+
+  }
+  inner(tree)
+  return height;
+}
+
+var tree = new BinarySearchTree(10)
+tree.addChild(6);
+tree.addChild(15);
 tree.addChild(4);
 tree.addChild(8);
 tree.addChild(7);
 tree.addChild(9);
+tree.addChild(13);
+tree.addChild(18);
+tree.addChild(3);
+tree.addChild(12);
+tree.addChild(16);
+tree.addChild(14);
+tree.addChild(5);
+tree.addChild(19);
 // console.log(tree)
-console.log(tree.findSum(16))
+console.log(isBalanced(tree))
 

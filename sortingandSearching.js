@@ -33,7 +33,7 @@ var mergeSort = function(array){
 }
 
 var quickSort = function(array){
-  debugger;
+
   if(array.length < 2){
     return array;
   }
@@ -50,5 +50,23 @@ var quickSort = function(array){
   return quickSort(low).concat(array[pivot]).concat(quickSort(high))
 }
 
-var arr = [7, 4, 3, 5, 9, 6, 2]
-console.log(quickSort(arr))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

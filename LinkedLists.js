@@ -213,3 +213,7 @@ var isPalindrome = function(list){
 // var newList = wrapList(3, list.head);
 // console.log(newList.head.next.next.next)
 // console.log(newList.size())
+
+
+
+
